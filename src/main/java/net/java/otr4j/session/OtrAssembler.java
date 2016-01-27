@@ -79,7 +79,7 @@ public final class OtrAssembler {
 			msgText = msgText.substring(
 					HEAD_FRAGMENT_V2.length());
 		} else if (msgText.startsWith(HEAD_FRAGMENT_V3)) {
-			// v
+			// v3
 			msgText = msgText.substring(
 					HEAD_FRAGMENT_V3.length());
 
