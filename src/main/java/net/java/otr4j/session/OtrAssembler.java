@@ -109,10 +109,13 @@ public final class OtrAssembler {
 				discard();
 				throw new ProtocolException("Invalid receiver instance id: " + instances[1]);
 			}
-            // FIXME should we also verify that the sender instance tag of the fragment is valid? The sender instance tag is now ignored completely.
+
+            // currently sender instance tag is not verified, as we also have no
+            // use for that instance tag. It is sufficient to know that the
+            // message fragment is intended for us, i.e. receiver instance tag.
+
 			if (receiverInstance != 0
-					&& receiverInstance != ownInstance.getValue())
-			{
+					&& receiverInstance != ownInstance.getValue()) {
 				// discard message for different instance id
 				throw new UnknownInstanceException(
 						"Message for unknown instance tag "
@@ -136,10 +139,10 @@ public final class OtrAssembler {
 			n = Integer.parseInt(params[1]);
 		} catch (NumberFormatException e) {
 			discard();
-			throw new ProtocolException("Bad format for parameters");
+			throw new ProtocolException("Bad format for parameter current/total fragment number");
 		} catch (ArrayIndexOutOfBoundsException e) {
 			discard();
-			throw new ProtocolException("Expected at least 2 parameters");
+			throw new ProtocolException("Expected 2 parameters: current and total fragment numbers");
 		}
 
 		if (k <= 0 || k > MAX_FRAGMENTS || n <= 0 || n > MAX_FRAGMENTS || k > n
