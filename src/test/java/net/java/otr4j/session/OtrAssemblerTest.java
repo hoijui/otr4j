@@ -18,6 +18,22 @@ import static org.junit.Assert.*;
 public class OtrAssemblerTest {
 
     @Test
+    public void testCorrectParsingOfHighestTag() throws ProtocolException {
+        final InstanceTag tag = new InstanceTag(0xffffffff);
+        final String data = String.format("?OTR|ffffffff|%08x,00001,00002,test,", tag.getValue());
+        final OtrAssembler ass = new OtrAssembler(tag);
+        assertNull(ass.accumulate(data));
+    }
+
+    @Test
+    public void testCorrectParsingOfLowestTag() throws ProtocolException {
+        final InstanceTag tag = new InstanceTag(0x00000100);
+        final String data = String.format("?OTR|00000100|%08x,00001,00002,test,", tag.getValue());
+        final OtrAssembler ass = new OtrAssembler(tag);
+        assertNull(ass.accumulate(data));
+    }
+
+    @Test
     public void testCorrectParsingOf32bitsInteger() throws ProtocolException {
         final InstanceTag tag = new InstanceTag(0xff123456);
         final String data = String.format("?OTR|ff123456|%08x,00001,00002,test,", tag.getValue());
