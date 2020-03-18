@@ -6,6 +6,7 @@
  */
 package net.java.otr4j.session;
 
+import java.math.BigInteger;
 import java.net.ProtocolException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -31,6 +32,34 @@ public class OtrAssemblerTest {
         final String data = String.format("?OTR|00000100|%08x,00001,00002,test,", tag.getValue());
         final OtrAssembler ass = new OtrAssembler(tag);
         assertNull(ass.accumulate(data));
+    }
+
+    private void testParsingInteger(final int corData, final String strData) throws ProtocolException {
+		final int intData = Integer.parseInt(strData, 16);
+        assertEquals(corData, intData);
+    }
+
+    private void testParsingBigInteger(final int corData, final String strData) throws ProtocolException {
+		final int bigIntData = new BigInteger(strData, 16).intValue();
+        assertEquals(corData, bigIntData);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testParsingInteger() throws ProtocolException {
+		testParsingInteger(0x00000100, "00000100"); // lowest
+		testParsingInteger(0x7ffffffe, "7ffffffe"); // mid - 1
+		testParsingInteger(0x7fffffff, "7fffffff"); // mid
+		testParsingInteger(0x80000000, "80000000"); // mid + 1
+		testParsingInteger(0xffffffff, "ffffffff"); // highest
+    }
+
+    @Test
+    public void testParsingBigInteger() throws ProtocolException {
+		testParsingBigInteger(0x00000100, "00000100"); // lowest
+		testParsingBigInteger(0x7ffffffe, "7ffffffe"); // mid - 1
+		testParsingBigInteger(0x7fffffff, "7fffffff"); // mid
+		testParsingBigInteger(0x80000000, "80000000"); // mid + 1
+		testParsingBigInteger(0xffffffff, "ffffffff"); // highest
     }
 
     @Test
