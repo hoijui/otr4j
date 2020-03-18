@@ -34,6 +34,22 @@ public class OtrAssemblerTest {
         assertNull(ass.accumulate(data));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCorrectDiscardingOfTooLowTag() throws ProtocolException {
+        final InstanceTag tag = new InstanceTag(0x00000fff);
+        final String data = String.format("?OTR|000000ff|%08x,00001,00002,test,", tag.getValue());
+        final OtrAssembler ass = new OtrAssembler(tag);
+        assertNull(ass.accumulate(data));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCorrectDiscardingOfTooHighTag() throws ProtocolException {
+        final InstanceTag tag = new InstanceTag(0x10000000);
+        final String data = String.format("?OTR|10000000|%08x,00001,00002,test,", tag.getValue());
+        final OtrAssembler ass = new OtrAssembler(tag);
+        assertNull(ass.accumulate(data));
+    }
+
     private void testParsingInteger(final int corData, final String strData) throws ProtocolException {
 		final int intData = Integer.parseInt(strData, 16);
         assertEquals(corData, intData);
